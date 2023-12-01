@@ -27,7 +27,6 @@ class Satellite {
         let acceleration = this.applyAcceleration(orbitalBody, gAcc, tangentAcceleration, "prograde");
 
         this.propogate(acceleration);
-
     }
 
     //Method to update the position of the satellite

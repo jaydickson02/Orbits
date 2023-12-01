@@ -7,6 +7,7 @@ let orbitalDifference = 20;
 let isPaused = false;
 let burnActive = false;
 
+
 //List of vibrant different colours
 let colourList = [ 
     // [255, 0, 0],
