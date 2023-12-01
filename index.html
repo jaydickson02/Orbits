@@ -10,13 +10,30 @@
     <script src="sketch.js"></script>
 
     <title>Orbits</title>
+
+    <!-- Add CSS styling here -->
+    <style>
+        body {
+            background-color: #212936;
+        }
+
+        #acc {
+            position: absolute;
+            top: 8px;
+            left: 2px;
+        }
+        #burnTime {
+            position: absolute;
+            top: 8px;
+            left: 150px;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- <label for="acc">Acceleration</label> -->
+    <input type="text" id="acc" placeholder="Acceleration">
+    <input type="text" id="burnTime" placeholder="Burn Time (s)">
 </body>
-
-  <label for="acc">Acceleration</label>
-  <input type="text" id="acc">
- 
 
 </html>

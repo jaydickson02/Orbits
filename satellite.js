@@ -106,7 +106,8 @@ class Satellite {
 
     //Method to draw the satellite
     draw() {
-        fill(this.colour[0], this.colour[1], this.colour[2]);
+        stroke(255)
+        fill(255, 255, 255);
         circle(this.pos.x, this.pos.y, this.mass);
     }
 
