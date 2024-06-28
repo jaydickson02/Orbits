@@ -1,39 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="p5.js"></script>
-    <script src="satellite.js"></script>
-    <script src="sketch.js"></script>
-
-    <title>Orbits</title>
-
-    <!-- Add CSS styling here -->
-    <style>
-        body {
-            background-color: #212936;
-        }
-
-        #acc {
-            position: absolute;
-            top: 8px;
-            left: 2px;
-        }
-        #burnTime {
-            position: absolute;
-            top: 8px;
-            left: 150px;
-        }
-    </style>
+    <title>Satellite Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
 <body>
-    <!-- <label for="acc">Acceleration</label> -->
-    <input type="text" id="acc" placeholder="Acceleration">
-    <input type="text" id="burnTime" placeholder="Burn Time (s)">
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+        <h1 class="text-2xl font-bold">Satellite Simulation</h1>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="satellite.js"></script>
+    <script src="Sketch.js"></script>
 </body>
-
 </html>

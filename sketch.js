@@ -1,165 +1,137 @@
 let planetPosition;
-let accValue = 0;
-let burnTime = 0;
 let SmallestOrbitalRadius = 50;
 let bigG = 100;
 let orbitalDifference = 20;
 let isPaused = false;
-let burnActive = false;
 
-
-//List of vibrant different colours
-let colourList = [ 
-    // [255, 0, 0],
-    // [255, 255, 0],
-    // [0, 255, 0],
-    // [0, 255, 255],
-    // [0, 0, 255],
-    // [255, 0, 255],
-    // [255, 60, 255],
-    // [255, 0, 127],
-    // [127, 0, 255],
-    // [0, 255, 127],
-    // [127, 255, 0],
-    // [0, 127, 255],
-    // [255, 127, 0],
-    // [255, 255, 127],
-    // [127, 255, 255],
-    // [255, 127, 255],
-    // [127, 127, 127],
-    // [255, 127, 127],
-    // [127, 255, 127],
-    // [127, 127, 255],
-
-    //Shades of gray
-    [0, 0, 0],
-    [25, 25, 25],
-    [50, 50, 50],
-    [75, 75, 75],
-    [100, 100, 100],
-    [125, 125, 125],
-    [150, 150, 150],
-    [175, 175, 175],
-    [200, 200, 200],
-    [225, 225, 225],
-    [255, 255, 255]
+let colourList = [
+    [255, 99, 71],
+    [135, 206, 250],
+    [124, 252, 0],
+    [255, 215, 0],
+    [255, 20, 147],
+    [0, 191, 255],
+    [50, 205, 50],
+    [255, 140, 0],
+    [138, 43, 226],
+    [255, 105, 180]
 ];
 
-
-//Hold Satellite Objects
 let satellites = [];
+let satelliteCounter = 1;
 
-function setup(){
-    //Create Canvas with window width and height
+function setup() {
     createCanvas(windowWidth, windowHeight);
+    createUI();
 
-    // Pause button
-    pauseButton = createButton('Pause/Resume');
-    pauseButton.position(2, 30);
-    pauseButton.mousePressed(togglePause);
+    planetPosition = createVector(width / 2, height / 2);
+    let SatPosition = createVector(planetPosition.x, planetPosition.y - SmallestOrbitalRadius);
+    let initialSatellite = new Satellite(SatPosition.x, SatPosition.y, 0, 0, 10, colourList[0], 'Satellite 1');
+    initialSatellite.findOrbit(planetPosition, bigG);
+    satellites.push(initialSatellite);
+    updateSatelliteSelect();
 
-    // Add satellite button
-    addButton = createButton('Add Satellite');
-    addButton.position(110, 30);
-    addButton.mousePressed(addSatellite);
-
-    // Remove satellite button
-    removeButton = createButton('Remove Satellite');
-    removeButton.position(202, 30);
-    removeButton.mousePressed(removeSatellite);
-
-    //Acceleration input button
-    button = createButton('Run');
-    button.position(298, 8);
-    button.mousePressed(updateAcc);
-    
-    planetPosition = createVector(width/2, height/2);
-   
-    acceleration = createVector(0, 0);
-    SatPosition = createVector(planetPosition.x, planetPosition.y - SmallestOrbitalRadius);
-    
-    //Initialise a set of satellites
-    for(let i = 0; i < 1; i++) {
-
-        satellites[i] = new Satellite(SatPosition.x, SatPosition.y - (i * orbitalDifference), 0, 0, 2, colourList[i]);
-
-        //Find initial velocity
-        satellites[i].findOrbit(planetPosition, bigG);
-    }
-    
-    addAcc = createVector(0, 0);
-  
-    //Set framerate
     frameRate(60);
-    
 }
 
-
-function draw(){
-
+function draw() {
     if (!isPaused) {
-    
-        //Set Background
-        background(33,41,54);
+        background(getComputedStyle(document.documentElement).getPropertyValue('--background-color'));
+        drawPlanet(planetPosition.x, planetPosition.y, 50);
 
-        stroke(255)
-        //Draw Planet
-        ellipse(planetPosition.x, planetPosition.y, 10, 10);
-
-        //Logic for satellites
-        for(let i = 0; i < satellites.length; i++) {
-            satellites[i].run(planetPosition, bigG, accValue);
-            satellites[i].draw();
+        for (let i = 0; i < satellites.length; i++) {
+            satellites[i].run(planetPosition, bigG);
+            satellites[i].draw(planetPosition);
             satellites[i].drawTrail();
-        } 
+            }
+            }
+            }
+            
+            function drawPlanet(x, y, size) {
+            fill(getComputedStyle(document.documentElement).getPropertyValue('–planet-color'));
+            stroke(0);
+            strokeWeight(2);
+            ellipse(x, y, size, size);
+            }
+            
+            function createUI() {
+            let controls = createDiv().id('controls').addClass('flex flex-col space-y-2 fixed top-16 left-10 p-4 rounded-lg z-50');
+            controls.child(createButton('Pause/Resume').mousePressed(togglePause).addClass('px-4 py-2 bg-blue-500 text-white rounded'));
+            controls.child(createLabeledInput('Add Satellite', 'satelliteLabel', 'Enter label', 'satelliteAltitude', 'Enter altitude'));
+            controls.child(createButton('Add').mousePressed(addSatellite).addClass('px-4 py-2 bg-green-500 text-white rounded'));
+            controls.child(createLabeledSelect('Select Group', 'groupSelect'));
+            controls.child(createButton('Remove Selected').mousePressed(removeSatellite).addClass('px-4 py-2 bg-red-500 text-white rounded'));
+            controls.child(createLabeledInput('Acceleration', 'acc', 'Enter acceleration'));
+            controls.child(createLabeledInput('Burn Time (s)', 'burnTime', 'Enter burn time'));
+            controls.child(createButton('Run').mousePressed(updateAcc).addClass('px-4 py-2 bg-purple-500 text-white rounded'));
 
-        //Burn Logic
-        if(burnActive) {
-            burnTimer()
+        }
+
+        function createLabeledInput(labelText, inputId, inputPlaceholder, inputId2, inputPlaceholder2) {
+        let container = createDiv().addClass('flex flex-col space-y-1');
+        container.child(createSpan(labelText).addClass('font-semibold text-black dark:text-white'));
+        container.child(createInput().id(inputId).attribute('placeholder', inputPlaceholder).addClass('px-3 py-2 border rounded'));
+        if (inputId2) {
+        container.child(createInput().id(inputId2).attribute('placeholder', inputPlaceholder2).addClass('px-3 py-2 border rounded'));
+        }
+        return container;
+        }
+        
+        function createLabeledSelect(labelText, selectId) {
+        let container = createDiv().addClass('flex flex-col space-y-1');
+        container.child(createSpan(labelText).addClass('font-semibold text-black dark:text-white'));
+        container.child(createSelect().id(selectId).addClass('px-3 py-2 border rounded'));
+        return container;
+        }
+        
+        function updateAcc() {
+        let elementAcc = select('#acc').value();
+        let elementBurn = select('#burnTime').value();
+        let selectedGroup = select('#groupSelect').value();
+        if (elementAcc && elementBurn && elementAcc != 0 && elementBurn != 0 && selectedGroup) {
+            let accValue = parseFloat(elementAcc);
+            let burnTime = parseFloat(elementBurn);
+        
+            let selectedSatellites = satellites.filter(satellite => satellite.label.includes(selectedGroup));
+            selectedSatellites.forEach(satellite => satellite.applyBurn(accValue, burnTime));
         }
     }
-}
 
-function updateAcc(){
-
-    const elementAcc = document.getElementById("acc");
-    const elementBurn = document.getElementById("burnTime");
-
-    if(elementAcc.value == "" || elementBurn.value == "" || elementAcc.value == 0 || elementBurn.value == 0) {
-        return;
-    }
-
-    accValue = parseFloat(elementAcc.value) / 1000;
-    burnTime = parseFloat(elementBurn.value) * 60;
-
-    burnActive = true;
- 
-}
-
-function burnTimer() {
-    if (burnTime > 0) {
-        burnTime -= 1;
-    }
-    else {
-        accValue = 0;
-        burnActive = false;
-    }
-}
-
-function togglePause() {
+    function togglePause() {
     isPaused = !isPaused;
-}
-
-function addSatellite() {
-    let newSatelliteIndex = satellites.length;
-    let newSatellitePos = createVector(planetPosition.x, planetPosition.y - SmallestOrbitalRadius - newSatelliteIndex * orbitalDifference);
-    let newSatellite = new Satellite(newSatellitePos.x, newSatellitePos.y, 0, 0, 2, colourList[newSatelliteIndex % colourList.length]);
-    newSatellite.findOrbit(planetPosition, bigG);
-    satellites.push(newSatellite);
+    }
+    
+    function addSatellite() {
+    let label = select('#satelliteLabel').value();
+    let altitude = parseFloat(select('#satelliteAltitude').value());
+    if (label && !isNaN(altitude)) {
+        let newSatellitePos = createVector(planetPosition.x, planetPosition.y - SmallestOrbitalRadius - altitude);
+        let colourIndex = satellites.length % colourList.length;
+        let uniqueLabel = `${label} ${satelliteCounter++}`;
+        let newSatellite = new Satellite(newSatellitePos.x, newSatellitePos.y, 0, 0, 10, colourList[colourIndex], uniqueLabel);
+        newSatellite.findOrbit(planetPosition, bigG);
+        satellites.push(newSatellite);
+        updateSatelliteSelect();
+    }
 }
 
 function removeSatellite() {
-    if (satellites.length > 0) {
-        satellites.pop();
-    }
+let selectedGroup = select('#groupSelect').value();
+if (selectedGroup) {
+satellites = satellites.filter(satellite => !satellite.label.includes(selectedGroup));
+updateSatelliteSelect();
+}
+}
+
+function updateSatelliteSelect() {
+let satelliteSelect = select('#groupSelect');
+satelliteSelect.html('');
+let groups = new Set(satellites.map(satellite => satellite.label.split(' ')[0]));
+groups.forEach(group => {
+satelliteSelect.option(group);
+});
+}
+
+function selectSatellite() {
+// Additional logic can be added here if needed when a satellite is selected
 }

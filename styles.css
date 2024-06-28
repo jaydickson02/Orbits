@@ -1,0 +1,65 @@
+:root {
+    --background-color: #ffffff;
+    --UI-background-color: #edeff3;
+    --text-color: #000000;
+    --control-background: rgba(255, 255, 255, 0.9);
+    --control-text: #000000;
+    --control-border: #cccccc;
+    --planet-color: #2d2b2b;
+    --label-background: rgba(0, 0, 0, 0.7);
+    --label-text-color: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #1f2937;
+        --UI-background-color: #ffffff;
+        --text-color: #ffffff;
+        --control-background: rgba(31, 41, 55, 0.9);
+        --control-text: #ffffff;
+        --control-border: #444444;
+        --planet-color: #2a2828;
+        --label-background: rgba(255, 255, 255, 0.7);
+        --label-text-color: #ffffff;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: var(--UI-background-color);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    color: #000000;
+}
+
+button {
+    cursor: pointer;
+}
+
+.planet {
+    fill: var(--planet-color);
+}
+
+.satellite-label {
+    background-color: var(--label-background);
+    color: var(--label-text-color);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
